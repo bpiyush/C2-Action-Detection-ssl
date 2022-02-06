@@ -165,6 +165,8 @@ def test(cfg):
 
     # Build the video model and print model statistics.
     model = build_model(cfg)
+    # from debug import debug; debug()
+    # ckpt_path = cfg.TEST.CHECKPOINT_FILE_PATH
     if du.is_master_proc():
         misc.log_model_info(model, cfg, is_train=False)
 

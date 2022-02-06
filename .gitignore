@@ -1,0 +1,5 @@
+# Features for BMN training
+*/data/ek100/video_features/
+
+# Python cache
+*/__pycache__/

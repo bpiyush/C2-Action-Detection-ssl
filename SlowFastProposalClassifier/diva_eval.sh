@@ -6,13 +6,17 @@ DATA_DIR=/ssd/pbagad/datasets/EPIC-KITCHENS-100/EPIC-KITCHENS/
 ANNO_DIR=/ssd/pbagad/datasets/EPIC-KITCHENS-100/annotations/
 batch_size=16
 
-# echo "Evaluating for R2+1D"
+
+# echo "Evaluating for AVID-CMA"
 # # setup
-# cfg=/home/pbagad/projects/epic-kitchens-ssl/configs/EPIC-KITCHENS/R2PLUS1D/32x112x112_R18_K400_LR0.0025.yaml
-# ckpt=/home/pbagad/expts/epic-kitchens-ssl/32x112x112_R2+1D-18_K400_LR0.0025/checkpoints/checkpoint_best.pyth
-# outdir=/home/pbagad/expts/epic-kitchens-ssl/32x112x112_R2+1D-18_K400_LR0.0025/bmn-proposal-classification-scores/
+# cfg=/home/pbagad/projects/epic-kitchens-ssl/configs/EPIC-KITCHENS/AVID_CMA/32x112x112_R18_K400_LR0.0025.yaml
+# out_base_dir=/home/pbagad/expts/epic-kitchens-ssl/AVID_CMA--32x112x112_R18_K400_LR0.0025/
+# ckpt_name=checkpoint_best.pyth
+# ckpt_path=$out_base_dir/checkpoints/$ckpt_name
+# outdir=$out_base_dir/bmn-proposal-classification-scores/
+# echo "Saving logs at $outdir"
 # mkdir -p $outdir
-# # evaluate
+# # run classifier on proposals
 # python run_net.py \
 #     --cfg $cfg \
 #     NUM_GPUS $NUM_GPUS \
@@ -21,19 +25,21 @@ batch_size=16
 #     EPICKITCHENS.ANNOTATIONS_DIR $ANNO_DIR \
 #     TRAIN.ENABLE False \
 #     TEST.ENABLE True \
-#     TEST.CHECKPOINT_FILE_PATH $ckpt \
+#     TEST.CHECKPOINT_FILE_PATH $ckpt_path \
 #     EPICKITCHENS.TEST_LIST /home/pbagad/projects/C2-Action-Detection-ssl/BMNProposalGenerator/output/ek100/result_proposal-validation.pkl \
 #     EPICKITCHENS.TEST_SPLIT validation \
-#     TEST.BATCH_SIZE $batch_size 
+#     TEST.BATCH_SIZE $batch_size > $outdir/log.txt
+# # compute final metrics
+# python ../EvaluationCode/evaluate_detection_json_ek100.py  $outdir/action_detection_baseline_validation.json $ANNO_DIR/EPIC_100_validation.pkl > $outdir/metrics.txt
 
 
-echo "Evaluating for AVID-CMA"
-# setup
-cfg=/home/pbagad/projects/epic-kitchens-ssl/configs/EPIC-KITCHENS/AVID_CMA/32x112x112_R18_K400_LR0.0025.yaml
-out_base_dir=/home/pbagad/expts/epic-kitchens-ssl/AVID_CMA--32x112x112_R18_K400_LR0.0025/
+echo "Evaluating for R2+1D"
+cfg=/home/pbagad/projects/epic-kitchens-ssl/configs/EPIC-KITCHENS/R2PLUS1D/32x112x112_R18_K400_LR0.0025.yaml
+out_base_dir=/home/pbagad/expts/epic-kitchens-ssl/R2PLUS1D--32x112x112_R18_K400_LR0.0025/
 ckpt_name=checkpoint_best.pyth
 ckpt_path=$out_base_dir/checkpoints/$ckpt_name
 outdir=$out_base_dir/bmn-proposal-classification-scores/
+echo "Saving logs at $outdir"
 mkdir -p $outdir
 # run classifier on proposals
 python run_net.py \
